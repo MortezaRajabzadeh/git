@@ -1,0 +1,69 @@
+{
+  "proxy_enabled": true,
+  "proxy_type": "residential",
+  "providers": {
+    "brightdata": {
+      "enabled": false,
+      "host": "brd.superproxy.io",
+      "port": 22225,
+      "username": "your_username",
+      "password": "your_password"
+    },
+    "smartproxy": {
+      "enabled": false,
+      "host": "gate.smartproxy.com",
+      "port": 7000,
+      "username": "your_username",
+      "password": "your_password"
+    },
+    "oxylabs": {
+      "enabled": false,
+      "host": "pr.oxylabs.io",
+      "port": 7777,
+      "username": "your_username",
+      "password": "your_password"
+    },
+    "custom_list": {
+      "enabled": false,
+      "proxies": [
+        "http://user:pass@ip:port",
+        "http://user:pass@ip:port"
+      ]
+    },
+    "free_proxy": {
+      "enabled": true,
+      "note": "Fallback option - not recommended for production"
+    }
+  },
+  "rotation": {
+    "enabled": true,
+    "cooldown_minutes": 30,
+    "max_uses_per_proxy": 3,
+    "retry_failed_after_minutes": 60
+  },
+  "validation": {
+    "test_url": "https://api.ipify.org?format=json",
+    "timeout_seconds": 10,
+    "max_retries": 3
+  },
+  "geolocation": {
+    "match_timezone": true,
+    "match_language": true,
+    "preferred_countries": ["US", "GB", "CA", "AU"]
+  },
+  "captcha_services": {
+    "enabled": false,
+    "primary_service": "2captcha",
+    "fallback_to_manual": true,
+    "2captcha": {
+      "enabled": false,
+      "api_key": "your_2captcha_api_key_here"
+    },
+    "anticaptcha": {
+      "enabled": false,
+      "api_key": "your_anticaptcha_api_key_here"
+    },
+    "timeout_seconds": 120,
+    "retry_attempts": 2
+  }
+}

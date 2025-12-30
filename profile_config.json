@@ -1,0 +1,22 @@
+{
+  "profile_enabled": true,
+  "profile_directory": "browser_profiles",
+  "max_profiles": 10,
+  "rotation": {
+    "enabled": true,
+    "max_uses_per_profile": 5,
+    "cooldown_hours": 24,
+    "reuse_after_hours": 48
+  },
+  "cleanup": {
+    "auto_cleanup": true,
+    "max_age_days": 30,
+    "keep_successful_profiles": true
+  },
+  "preferences": {
+    "disable_images": false,
+    "disable_css": false,
+    "disable_javascript": false,
+    "enable_extensions": false
+  }
+}

@@ -1,0 +1,10 @@
+selenium
+requests
+undetected-chromedriver
+pynput>=1.7.6
+screeninfo
+free-proxy
+fake-useragent
+pytz
+2captcha-python
+anticaptchaofficial
