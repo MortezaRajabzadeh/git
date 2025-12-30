@@ -1,0 +1,47 @@
+═══════════════════════════════════════════════════════════
+  دستورات سریع برای اجرا روی VPS
+  Quick Commands for VPS Execution
+═══════════════════════════════════════════════════════════
+
+🔧 رفع مشکلات (اولین بار):
+   bash vps_quick_fix.sh
+
+▶️  اجرای برنامه:
+   bash run_vps.sh
+
+📋 یا به صورت دستی:
+   Xvfb :99 -screen 0 1920x1080x24 -ac +extension GLX +render -noreset &
+   export DISPLAY=:99
+   python3 main.py
+
+🛑 توقف برنامه:
+   Ctrl+C
+   pkill -f chrome
+   pkill -f Xvfb
+
+📊 بررسی وضعیت:
+   ps aux | grep chrome
+   ps aux | grep Xvfb
+   tail -f output.log
+
+🧹 پاکسازی:
+   pkill -f chrome
+   pkill -f Xvfb
+   rm -rf browser_profiles/*/SingletonLock
+   rm -rf browser_profiles/*/SingletonSocket
+
+═══════════════════════════════════════════════════════════
+
+خطاهای رایج:
+
+1. "this platform is not supported" (pynput)
+   → bash vps_quick_fix.sh
+
+2. "ReadTimeoutError" یا Chrome timeout
+   → pkill -f chrome
+   → bash run_vps.sh
+
+3. "urllib3 version mismatch"
+   → pip3 install --upgrade urllib3==1.26.15
+
+═══════════════════════════════════════════════════════════

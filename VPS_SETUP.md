@@ -1,5 +1,29 @@
 # راهنمای نصب و اجرا روی VPS Hetzner
 
+## 🚀 شروع سریع (Quick Start)
+
+اگر با خطا مواجه شدید، این دستورات را اجرا کنید:
+
+```bash
+# 1. رفع مشکلات و نصب وابستگی‌ها
+bash vps_quick_fix.sh
+
+# 2. اجرای برنامه
+bash run_vps.sh
+```
+
+یا به صورت دستی:
+```bash
+# راه‌اندازی virtual display
+Xvfb :99 -screen 0 1920x1080x24 -ac +extension GLX +render -noreset &
+export DISPLAY=:99
+
+# اجرای برنامه
+python3 main.py
+```
+
+---
+
 ## پیش‌نیازها
 
 ### 1. سرور VPS
@@ -31,8 +55,8 @@ wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
 apt install -y ./google-chrome-stable_current_amd64.deb
 rm google-chrome-stable_current_amd64.deb
 
-# نصب وابستگی‌های Chrome برای headless mode
-apt install -y xvfb libxi6 libgconf-2-4 libnss3 libxss1 libappindicator3-1 libatk-bridge2.0-0 libgtk-3-0
+# نصب وابستگی‌های Chrome برای headless mode و Xvfb برای pynput
+apt install -y xvfb libxi6 libgconf-2-4 libnss3 libxss1 libappindicator3-1 libatk-bridge2.0-0 libgtk-3-0 x11-utils xserver-xephyr
 ```
 
 ### 4. کلون کردن پروژه
@@ -103,9 +127,19 @@ export HEADLESS=true
 
 ## اجرا
 
-### حالت عادی
+### حالت عادی (با Xvfb برای pynput)
 ```bash
+# راه‌اندازی virtual display
+Xvfb :99 -screen 0 1920x1080x24 &
+export DISPLAY=:99
+
+# اجرای برنامه
 python3 main.py
+```
+
+یا در یک خط:
+```bash
+DISPLAY=:99 xvfb-run -a python3 main.py
 ```
 
 ### اجرا در پس‌زمینه با screen
@@ -116,7 +150,9 @@ apt install -y screen
 # ایجاد session جدید
 screen -S github_bot
 
-# اجرای برنامه
+# راه‌اندازی virtual display و اجرای برنامه
+Xvfb :99 -screen 0 1920x1080x24 &
+export DISPLAY=:99
 python3 main.py
 
 # جدا شدن از session: Ctrl+A سپس D
@@ -125,7 +161,11 @@ python3 main.py
 
 ### اجرا با nohup
 ```bash
-nohup python3 main.py > output.log 2>&1 &
+# راه‌اندازی Xvfb در پس‌زمینه
+Xvfb :99 -screen 0 1920x1080x24 > /dev/null 2>&1 &
+
+# اجرای برنامه با DISPLAY
+DISPLAY=:99 nohup python3 main.py > output.log 2>&1 &
 
 # مشاهده لاگ
 tail -f output.log
@@ -147,6 +187,8 @@ After=network.target
 Type=simple
 User=root
 WorkingDirectory=/root/autoGithubAccountCreator-main
+Environment="DISPLAY=:99"
+ExecStartPre=/usr/bin/Xvfb :99 -screen 0 1920x1080x24
 ExecStart=/usr/bin/python3 /root/autoGithubAccountCreator-main/main.py
 Restart=on-failure
 RestartSec=10
@@ -269,6 +311,50 @@ pkill -f main.py
 ```
 
 ## مشکلات و راه‌حل‌ها
+
+### خطای pynput: "this platform is not supported"
+این خطا به دلیل نبود X server است. راه‌حل:
+```bash
+# نصب Xvfb
+apt install -y xvfb
+
+# اجرا با virtual display
+DISPLAY=:99 xvfb-run -a python3 main.py
+```
+
+### خطای ReadTimeoutError یا Chrome timeout
+این خطا معمولاً به دلیل مشکل در راه‌اندازی Chrome است:
+```bash
+# 1. نصب وابستگی‌های کامل Chrome
+apt install -y libnss3 libxss1 libasound2 libatk-bridge2.0-0 libgtk-3-0 libgbm1 fonts-liberation
+
+# 2. پاکسازی فرآیندهای قدیمی
+pkill -f chrome
+pkill -f Xvfb
+
+# 3. پاکسازی lock files
+rm -rf browser_profiles/*/SingletonLock
+rm -rf browser_profiles/*/SingletonSocket
+
+# 4. اجرا با اسکریپت کمکی
+bash vps_quick_fix.sh
+bash run_vps.sh
+```
+
+یا استفاده از اسکریپت سریع:
+```bash
+# دانلود و اجرای fix script
+bash vps_quick_fix.sh
+
+# سپس اجرای برنامه
+bash run_vps.sh
+```
+
+### هشدار urllib3 version mismatch
+این فقط یک warning است و مشکلی ایجاد نمی‌کند. برای رفع:
+```bash
+pip3 install --upgrade urllib3 requests
+```
 
 ### CAPTCHA زیاد می‌آید
 - IP را تغییر دهید
